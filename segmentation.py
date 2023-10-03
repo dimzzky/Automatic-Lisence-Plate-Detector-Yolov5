@@ -7,7 +7,7 @@ language = 'en'  # Replace with the language code(s) you need, e.g., 'en' for En
 reader = easyocr.Reader([language], gpu=False)  # Set gpu=False to use CPU
 
 # Path to the image you want to perform OCR on
-image_path = 'test_images/images (1).jpeg'  # Replace with the path to your image
+image_path = 'output/roi_0.jpg'  # Replace with the path to your image
 
 # Perform OCR on the image
 results = reader.readtext(image_path)
