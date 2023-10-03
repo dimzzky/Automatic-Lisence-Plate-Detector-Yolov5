@@ -18,7 +18,7 @@ stride = int(model.stride.max())  # model stride
 imgsz = check_img_size(640, s=stride)  # check img_size
 
 # Load the image
-image_path = 'test_images/New_Indonesian_License_Plate_for_Cars.jpg'  # replace with your path
+image_path = 'test_images/Plat-Nomor-Cantik-Twitter.jpg'  # replace with your path
 img0 = cv2.imread(image_path)  # BGR
 img = img0.copy()
 
@@ -55,7 +55,15 @@ for i, det in enumerate(pred):  # detections per image
             
             # Crop the image using the coordinates
             cropped_img = img0[y1:y2, x1:x2]
-
-            # Save the cropped image (optional)
-            output_path = 'output/roi.jpg'
-            cv2.imwrite(output_path, cropped_img)
+            
+            # Perform binary inversion
+            gray_cropped_img = cv2.cvtColor(cropped_img, cv2.COLOR_BGR2GRAY)
+            _, inverted_img = cv2.threshold(gray_cropped_img, 127, 255, cv2.THRESH_BINARY_INV)
+            
+            # Check background color and possibly re-invert
+            if inverted_img[0, 0] == 0:  # background is black
+                inverted_img = cv2.bitwise_not(inverted_img)  # invert back to white background
+            
+            # Save the (possibly re-inverted) image (optional)
+            output_path = f'output/roi_{i}.jpg'
+            cv2.imwrite(output_path, inverted_img)
