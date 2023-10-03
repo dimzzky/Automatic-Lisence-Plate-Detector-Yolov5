@@ -18,7 +18,7 @@ stride = int(model.stride.max())  # model stride
 imgsz = check_img_size(640, s=stride)  # check img_size
 
 # Load the image
-image_path = 'test_images/Plat-Nomor-Cantik-Twitter.jpg'  # replace with your path
+image_path = 'test_images/AB5592EG.jpg'  # replace with your path
 img0 = cv2.imread(image_path)  # BGR
 img = img0.copy()
 

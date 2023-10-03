@@ -1,0 +1,18 @@
+#ignore these files below
+models/__pycache__/__init__.cpython-38.pyc
+models/__pycache__/common.cpython-38.pyc
+models/__pycache__/experimental.cpython-38.pyc
+models/__pycache__/yolo.cpython-38.pyc
+test_images
+test_images/16a2c8c8e4d0dda3bcd4d7dd524f7097.jpg
+test_images/2022_indonesian_plate_general.png
+test_images/AB5592EG.jpg
+test_images/download.jpeg
+test_images/images (1).jpeg
+test_images/images.jpeg
+test_images/IMG_COM_20220219_2231341.jpg
+test_images/New_Indonesian_License_Plate_for_Cars.jpg
+test_images/Plat-Nomor-Cantik-Twitter.jpg
+test_images/ri_b18hw_front.jpg
+output
+output/roi_0.jpg

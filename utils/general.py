@@ -35,7 +35,7 @@ import pkg_resources as pkg
 import torch
 import torchvision
 import yaml
-from ultralytics.yolo.utils.checks import check_requirements
+# from ultralytics.yolo.utils.checks import check_requirements
 
 from utils import TryExcept, emojis
 from utils.downloads import curl_download, gsutil_getsize
@@ -353,22 +353,22 @@ def check_git_status(repo='ultralytics/yolov5', branch='master'):
     LOGGER.info(s)
 
 
-@WorkingDirectory(ROOT)
-def check_git_info(path='.'):
-    # YOLOv5 git info check, return {remote, branch, commit}
-    check_requirements('gitpython')
-    import git
-    try:
-        repo = git.Repo(path)
-        remote = repo.remotes.origin.url.replace('.git', '')  # i.e. 'https://github.com/ultralytics/yolov5'
-        commit = repo.head.commit.hexsha  # i.e. '3134699c73af83aac2a481435550b968d5792c0d'
-        try:
-            branch = repo.active_branch.name  # i.e. 'main'
-        except TypeError:  # not on any branch
-            branch = None  # i.e. 'detached HEAD' state
-        return {'remote': remote, 'branch': branch, 'commit': commit}
-    except git.exc.InvalidGitRepositoryError:  # path is not a git dir
-        return {'remote': None, 'branch': None, 'commit': None}
+# @WorkingDirectory(ROOT)
+# def check_git_info(path='.'):
+#     # YOLOv5 git info check, return {remote, branch, commit}
+#     check_requirements('gitpython')
+#     import git
+#     try:
+#         repo = git.Repo(path)
+#         remote = repo.remotes.origin.url.replace('.git', '')  # i.e. 'https://github.com/ultralytics/yolov5'
+#         commit = repo.head.commit.hexsha  # i.e. '3134699c73af83aac2a481435550b968d5792c0d'
+#         try:
+#             branch = repo.active_branch.name  # i.e. 'main'
+#         except TypeError:  # not on any branch
+#             branch = None  # i.e. 'detached HEAD' state
+#         return {'remote': remote, 'branch': branch, 'commit': commit}
+#     except git.exc.InvalidGitRepositoryError:  # path is not a git dir
+#         return {'remote': None, 'branch': None, 'commit': None}
 
 
 def check_python(minimum='3.7.0'):
@@ -794,6 +794,28 @@ def resample_segments(segments, n=1000):
         xp = np.arange(len(s))
         segments[i] = np.concatenate([np.interp(x, xp, s[:, i]) for i in range(2)]).reshape(2, -1).T  # segment xy
     return segments
+
+def scale_coords(img1_shape, coords, img0_shape, ratio_pad=None):
+    # Rescale coords (xyxy) from img1_shape to img0_shape
+    if ratio_pad is None:  # calculate from img0_shape
+        gain = min(img1_shape[0] / img0_shape[0], img1_shape[1] / img0_shape[1])  # gain  = old / new
+        pad = (img1_shape[1] - img0_shape[1] * gain) / 2, (img1_shape[0] - img0_shape[0] * gain) / 2  # wh padding
+    else:
+        gain = ratio_pad[0][0]
+        pad = ratio_pad[1]
+
+    coords[:, [0, 2]] -= pad[0]  # x padding
+    coords[:, [1, 3]] -= pad[1]  # y padding
+    coords[:, :4] /= gain
+    clip_coords(coords, img0_shape)
+    return coords
+
+def clip_coords(boxes, img_shape):
+    # Clip bounding xyxy bounding boxes to image shape (height, width)
+    boxes[:, 0].clamp_(0, img_shape[1])  # x1
+    boxes[:, 1].clamp_(0, img_shape[0])  # y1
+    boxes[:, 2].clamp_(0, img_shape[1])  # x2
+    boxes[:, 3].clamp_(0, img_shape[0])  # y2
 
 
 def scale_boxes(img1_shape, boxes, img0_shape, ratio_pad=None):
